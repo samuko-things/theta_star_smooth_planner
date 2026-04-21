@@ -6,47 +6,54 @@ from launch.actions import (
   IncludeLaunchDescription)
 from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import PythonExpression, LaunchConfiguration
 from launch_ros.actions import Node
+from nav2_common.launch import RewrittenYaml, ReplaceString
 
 
 def generate_launch_description():
   # Set the path to this package.
   pkg_path = get_package_share_directory('theta_star_smooth_planner')
- 
-  # Set the path to the map file
-  map_file_name = 'room_with_walls.yaml'
-  map_yaml_path = os.path.join(pkg_path, 'maps', map_file_name)
+  # nav2_bringup_pkg_path = get_package_share_directory('nav2_bringup')
 
   # Set the path to the nav params file
   nav_params_file_name = 'nav2_bringup_params.yaml'
   nav_params_file = os.path.join(pkg_path, 'config', nav_params_file_name)
+
+  # Set the path to the map file used by AMCL
+  map_file_name = 'room_with_walls.yaml'
+  map_file = os.path.join(pkg_path, 'maps', map_file_name)
  
   #--------------------------------------------------------------------------
 
   # Launch configuration variables specific to simulation
   use_sim_time = LaunchConfiguration('use_sim_time')
+  nav_params = LaunchConfiguration('nav_params')
   map = LaunchConfiguration('map')
-  params_file = LaunchConfiguration('params_file')
-     
+
   declare_use_sim_time_cmd = DeclareLaunchArgument(
-    name='use_sim_time',
-    default_value='True',
-    description='Use simulation (Gazebo) clock if true')
+      name='use_sim_time', 
+      default_value='True',
+      description='Flag to enable use_sim_time'
+    )
+  
+  declare_nav_params_cmd = DeclareLaunchArgument(
+      name='nav_params',
+      default_value=nav_params_file,
+      # default_value=rewritten_nav_params_file,
+      description='file path to the parameter file'
+    )
   
   declare_map_cmd = DeclareLaunchArgument(
       name='map',
-      default_value=map_yaml_path,
-      description='file path to the map needed for navigation')
-  
-  declare_params_file_cmd = DeclareLaunchArgument(
-      name='params_file',
-      default_value=nav_params_file,
-      description='file path to the navigation paramater file needed for navigation')
+      default_value=map_file,
+      description='file path to the map needed for navigation'
+    )
+
 
   #-----------------------------------------------------------------------------
-  rviz_config_file = os.path.join(pkg_path,'config','amcl.rviz')
 
+  rviz_config_file = os.path.join(pkg_path,'config','amcl.rviz')
 
   # create needed nodes or launch files
   rviz_node = Node(
@@ -56,61 +63,128 @@ def generate_launch_description():
       output='screen'
   )
 
-  planner_node = Node(
-    package='theta_star_smooth_planner',
-    executable='theta_star_smooth_planner.py',
-    name='theta_star_smooth_planner',
-    output='screen',
-    parameters=[{
-                 'cost_limit': 20
-                 }],
-  )
+  #-----------------------------------------------------------------------------
 
-  pure_pursuit_node = Node(
-    package='theta_star_smooth_planner',
-    executable='pure_pursuit',
-    name='pure_pursuit',
-    output='screen',
-    parameters=[{'look_ahead_distance': 0.3,
-                 'max_linear_velocity': 0.2,
-                 'max_angular_velocity': 1.0,
-                 'path_topic': '/theta_star/path'
-                 }],
-    remappings=[('/cmd_vel', '/cmd_vel_nav')],
-  )
+  amcl_launch_path = os.path.join(pkg_path, 'launch', 'amcl.launch.py')
+
+  amcl_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(amcl_launch_path),
+        launch_arguments={
+                'use_sim_time': use_sim_time,
+                'nav_params': nav_params,
+                'map': map,
+        }.items(),
+    )
+
+  #--------------------------------------------------------------------------------
 
   lifecycle_nodes = [
-    'map_server',
-    'amcl',
-    'costmap',
+    # 'costmap',
+    'planner_server',
+    'controller_server',
+    'bt_navigator',
+    'behavior_server',
+    'smoother_server',
+    'waypoint_follower',
+    'velocity_smoother',
   ]
 
   remappings = [('/tf', 'tf'), ('/tf_static', 'tf_static')]
 
-  nav2_map_server_node = Node(
-    package='nav2_map_server',
-    executable='map_server',
-    name='map_server',
+  # nav2_costmap_2d_node = Node(
+  #   package='nav2_costmap_2d',
+  #   executable='nav2_costmap_2d',
+  #   name='costmap',
+  #   output='screen',
+  #   parameters=[
+  #     nav_params,
+  #     {'use_sim_time': use_sim_time}
+  #   ],
+  # )
+
+  nav2_planner_server_node = Node(
+    package='nav2_planner',
+    executable='planner_server',
+    name='planner_server',
     output='screen',
-    parameters=[params_file, {'yaml_filename': map}],
+    parameters=[
+      nav_params,
+      {'use_sim_time': use_sim_time}
+    ],
     remappings=remappings,
   )
 
-  nav2_costmap_2d_node = Node(
-    package='nav2_costmap_2d',
-    executable='nav2_costmap_2d',
-    name='costmap',
+  nav2_smoother_server_node = Node(
+    package='nav2_smoother',
+    executable='smoother_server',
+    name='smoother_server',
     output='screen',
-    parameters=[params_file],
+    parameters=[
+      nav_params,
+      {'use_sim_time': use_sim_time}
+    ],
+    remappings=remappings,
   )
 
-  nav2_amcl_node = Node(
-    package='nav2_amcl',
-    executable='amcl',
-    name='amcl',
+  nav2_controller_server_node = Node(
+    package='nav2_controller',
+    executable='controller_server',
+    name='controller_server',
     output='screen',
-    parameters=[params_file],
+    parameters=[
+      nav_params,
+      {'use_sim_time': use_sim_time}
+    ],
+    remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
+  )
+
+  nav2_bt_navigator_node = Node(
+    package='nav2_bt_navigator',
+    executable='bt_navigator',
+    name='bt_navigator',
+    output='screen',
+    parameters=[
+      nav_params,
+      {'use_sim_time': use_sim_time}
+    ],
     remappings=remappings,
+  )
+
+  nav2_behavior_server_node = Node(
+    package='nav2_behaviors',
+    executable='behavior_server',
+    name='behavior_server',
+    output='screen',
+    parameters=[
+      nav_params,
+      {'use_sim_time': use_sim_time}
+    ],
+    remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
+  )
+
+  nav2_waypoint_follower_node = Node(
+    package='nav2_waypoint_follower',
+    executable='waypoint_follower',
+    name='waypoint_follower',
+    output='screen',
+    parameters=[
+      nav_params,
+      {'use_sim_time': use_sim_time}
+    ],
+    remappings=remappings,
+  )
+
+  nav2_velocity_smoother_node = Node(
+    package='nav2_velocity_smoother',
+    executable='velocity_smoother',
+    name='velocity_smoother',
+    output='screen',
+    parameters=[
+      nav_params,
+      {'use_sim_time': use_sim_time}
+    ],
+    remappings=remappings
+    + [('cmd_vel', 'cmd_vel_nav')],
   )
 
   nav2_lifecycle_manager_node = Node(
@@ -127,16 +201,19 @@ def generate_launch_description():
  
   # add the necessary declared launch arguments to the launch description
   ld.add_action(declare_use_sim_time_cmd)
+  ld.add_action(declare_nav_params_cmd)
   ld.add_action(declare_map_cmd)
-  ld.add_action(declare_params_file_cmd)
  
   # Add the nodes to the launch description
-  ld.add_action(rviz_node)
-  ld.add_action(planner_node)
-  ld.add_action(pure_pursuit_node)
-  ld.add_action(nav2_map_server_node)
-  ld.add_action(nav2_costmap_2d_node)
-  ld.add_action(nav2_amcl_node)
+  ld.add_action(amcl_launch)
+  ld.add_action(nav2_planner_server_node)
+  ld.add_action(nav2_smoother_server_node)
+  ld.add_action(nav2_controller_server_node)
+  ld.add_action(nav2_bt_navigator_node)
+  ld.add_action(nav2_behavior_server_node)
+  ld.add_action(nav2_waypoint_follower_node)
+  ld.add_action(nav2_velocity_smoother_node)
   ld.add_action(nav2_lifecycle_manager_node)
+  ld.add_action(rviz_node)
 
   return ld
