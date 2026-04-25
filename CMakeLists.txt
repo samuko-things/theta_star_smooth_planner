@@ -29,8 +29,12 @@ set(dependencies
 add_executable(pure_pursuit src/pure_pursuit.cpp)
 ament_target_dependencies(pure_pursuit ${dependencies})
 
+add_executable(theta_star_smooth_planner src/theta_star_smooth_planner.cpp)
+ament_target_dependencies(theta_star_smooth_planner ${dependencies})
+
 install(TARGETS
   pure_pursuit
+  theta_star_smooth_planner
   DESTINATION lib/${PROJECT_NAME}
 )
 #-----------------------------------------------------

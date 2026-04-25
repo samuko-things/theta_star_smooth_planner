@@ -46,6 +46,7 @@ def generate_launch_description():
 
   #-----------------------------------------------------------------------------
   rviz_config_file = os.path.join(pkg_path,'config','amcl.rviz')
+  # rviz_config_file = os.path.join(pkg_path,'config','compare.rviz')
 
 
   # create needed nodes or launch files
@@ -58,7 +59,8 @@ def generate_launch_description():
 
   planner_node = Node(
     package='theta_star_smooth_planner',
-    executable='theta_star_smooth_planner.py',
+    executable='theta_star_smooth_planner',
+    # executable='theta_star_smooth_planner.py',
     name='theta_star_smooth_planner',
     output='screen',
     parameters=[{
