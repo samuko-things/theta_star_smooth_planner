@@ -86,7 +86,7 @@ def generate_launch_description():
     'behavior_server',
     'smoother_server',
     'waypoint_follower',
-    'velocity_smoother',
+    # 'velocity_smoother',
   ]
 
   remappings = [('/tf', 'tf'), ('/tf_static', 'tf_static')]
@@ -174,18 +174,18 @@ def generate_launch_description():
     remappings=remappings,
   )
 
-  nav2_velocity_smoother_node = Node(
-    package='nav2_velocity_smoother',
-    executable='velocity_smoother',
-    name='velocity_smoother',
-    output='screen',
-    parameters=[
-      nav_params,
-      {'use_sim_time': use_sim_time}
-    ],
-    remappings=remappings
-    + [('cmd_vel', 'cmd_vel_nav')],
-  )
+  # nav2_velocity_smoother_node = Node(
+  #   package='nav2_velocity_smoother',
+  #   executable='velocity_smoother',
+  #   name='velocity_smoother',
+  #   output='screen',
+  #   parameters=[
+  #     nav_params,
+  #     {'use_sim_time': use_sim_time}
+  #   ],
+  #   remappings=remappings
+  #   + [('cmd_vel', 'cmd_vel_nav')],
+  # )
 
   nav2_lifecycle_manager_node = Node(
     package='nav2_lifecycle_manager',
@@ -212,7 +212,7 @@ def generate_launch_description():
   ld.add_action(nav2_bt_navigator_node)
   ld.add_action(nav2_behavior_server_node)
   ld.add_action(nav2_waypoint_follower_node)
-  ld.add_action(nav2_velocity_smoother_node)
+  # ld.add_action(nav2_velocity_smoother_node)
   ld.add_action(nav2_lifecycle_manager_node)
   ld.add_action(rviz_node)
 
