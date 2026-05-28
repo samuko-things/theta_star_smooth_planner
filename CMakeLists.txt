@@ -41,6 +41,7 @@ ament_python_install_package(${PROJECT_NAME})
 
 install(PROGRAMS
   ${PROJECT_NAME}/theta_star_smooth_planner.py
+  ${PROJECT_NAME}/planner_benchmark.py
   DESTINATION lib/${PROJECT_NAME}
 )
 #---------------------------------------------
