@@ -62,16 +62,16 @@ class PlannerBenchmark(Node):
             writer.writerow([
                 "ser_num",
                 "planner",
-                "start_x",
-                "start_y",
-                "goal_x",
-                "goal_y",
+                # "start_x",
+                # "start_y",
+                # "goal_x",
+                # "goal_y",
                 "planning_time_ms",
                 "path_length_m",
-                "sparce_waypoint_count",
-                "dense_waypoint_count",
+                # "sparce_waypoint_count",
+                # "dense_waypoint_count",
                 "smoothness_deg",
-                "success"
+                # "success"
             ])
 
     # ----------------------------------------------------------
@@ -247,13 +247,13 @@ class PlannerBenchmark(Node):
                 f"Path Length: {path_length:.3f} m"
             )
 
-            self.get_logger().info(
-                f"Sparse Waypoint Count: {sparce_waypoint_count}"
-            )
+            # self.get_logger().info(
+            #     f"Sparse Waypoint Count: {sparce_waypoint_count}"
+            # )
 
-            self.get_logger().info(
-                f"Dense Waypoint Count: {dense_waypoint_count}"
-            )
+            # self.get_logger().info(
+            #     f"Dense Waypoint Count: {dense_waypoint_count}"
+            # )
 
             self.get_logger().info(
                 f"Normalized Smoothness: {smoothness:.3f}"
@@ -274,16 +274,16 @@ class PlannerBenchmark(Node):
             writer.writerow([
                 ser_num,
                 planner_name,
-                start_x,
-                start_y,
-                goal_x,
-                goal_y,
+                # start_x,
+                # start_y,
+                # goal_x,
+                # goal_y,
                 planning_time_ms,
                 path_length,
-                sparce_waypoint_count,
-                dense_waypoint_count,
+                # sparce_waypoint_count,
+                # dense_waypoint_count,
                 smoothness,
-                success
+                # success
             ])
 
     # ----------------------------------------------------------
@@ -426,19 +426,18 @@ def main(args=None):
 
     tests = [
         #(start_x, start_y, goal_x, goal_y)
-        (0.0, -4.0, 3.0, -4.0),
-        (-2.0, -2.0, 2.0, 3.0),
-        (-2.0, 4.0, -2.0, -4.0),
-        (0.0, -4.0, -2.5, -4.0),
-        (-2.5, -4.0, 2.0, 4.0),
-        (-2.5, 4.0, 2.0, 4.0)
+        (2.0, 4.0, 2.0, -4.0),
+        (2.0, 4.0, 0.0, -4.0),
+        (2.0, 4.0, -2.0, -4.0),
+        (2.0, 4.0, 0.0, 4.0),
+        (2.0, 4.0, -2.0, 4.0)
     ]
 
-    # planner_name = "NavThetaStar"
-    planner_name = "CThetaStar"
+    planner_name = "NavThetaStar"
+    # planner_name = "CThetaStar"
 
     for test in tests:
-        for count in range(20):
+        for count in range(100):
 
             node.send_goal(
                 count,
@@ -449,7 +448,7 @@ def main(args=None):
                 test[3]
             )
 
-            time.sleep(0.5)
+            time.sleep(0.1)
 
     node.get_logger().info("Benchmark Complete")
 
