@@ -424,17 +424,25 @@ def main(args=None):
     # TEST CASES
     # ----------------------------------------------------------
 
+    # tests = [
+    #     #(start_x, start_y, goal_x, goal_y)
+    #     (2.0, 4.0, 2.0, -4.0),
+    #     (2.0, 4.0, 0.0, -4.0),
+    #     (2.0, 4.0, -2.0, -4.0),
+    #     (2.0, 4.0, 0.0, 4.0),
+    #     (2.0, 4.0, -2.0, 4.0)
+    # ]
+
     tests = [
         #(start_x, start_y, goal_x, goal_y)
-        (2.0, 4.0, 2.0, -4.0),
-        (2.0, 4.0, 0.0, -4.0),
-        (2.0, 4.0, -2.0, -4.0),
-        (2.0, 4.0, 0.0, 4.0),
-        (2.0, 4.0, -2.0, 4.0)
+        (8.26, 10.50, -6.00, -33.59),
+        (-7.73, 10.41, 5.82, -29.61),
+        (-2.69, -21.35, 1.45, -4.31)
     ]
 
-    planner_name = "NavThetaStar"
-    # planner_name = "CThetaStar"
+    # planner_name = "Nav2AStar"
+    # planner_name = "Nav2ThetaStar"
+    planner_name = "CThetaStar"
 
     for test in tests:
         for count in range(100):

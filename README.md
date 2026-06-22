@@ -10,14 +10,17 @@ it is optimized for getting the shortest possible path.
 - ensure you have created your ros workspace
 - clone and install the [MoboBot](https://github.com/robocre8/mobo_bot) Robot Package to Test the Planner
   ```shell
-  git clone -b jazzy https://github.com/robocre8/mobo_bot.git
+  git clone -b world-test https://github.com/robocre8/mobo_bot.git
   ```
 - clone the theta_star_smooth_planner package
   ```shell
-  git clone https://github.com/samuko-things/theta_star_smooth_planner.git
+  git clone -b world-test https://github.com/samuko-things/theta_star_smooth_planner.git
   ```
 
-> NOTE: you might need to make the `theta_star_planner.py` executable
+- clone the theta_star_smooth_planner plugin package
+  ```shell
+  git clone -b lazy-style https://github.com/samuko-things/theta_star_smooth_planner_plugin.git
+  ```
 
 - cd into the root directory of your ros workspace and run rosdep to install all necessary ROS  package dependencies
   ```shell
@@ -37,13 +40,18 @@ it is optimized for getting the shortest possible path.
   ```shell
   ros2 launch mobo_bot_sim sim.launch.py
   ```
-- start the theta_star_smooth_planner with pure_pursuit controller and some navigation.
+
+- start the navigation launch file.
   ```shell
   ros2 launch theta_star_smooth_planner nav_test.launch.py
   ```
 
-- use the **2D GoalPose** button in RVIZ to move the robot from point to point and see the planner at work.
+- edit the `planner_benchmark.py` file in the `theta_star_smooth_planner` package.
 
+- run the benchmark test after edit.
+  ```shell
+  ros2 run theta_star_smooth_planner planner_benchmark.py
+  ```
 
 📚 Resources:
 - [Self-Driving Planning Course](https://www.udemy.com/share/10d4U53@J5jcGUgRzDALXhLAGOMWxU6dAnWoZ-g8zGFl1djv_uJFHfRN5X0qLnnhFUJ_xl7J/) by Antonio Brandi
