@@ -247,13 +247,13 @@ class PlannerBenchmark(Node):
                 f"Path Length: {path_length:.3f} m"
             )
 
-            # self.get_logger().info(
-            #     f"Sparse Waypoint Count: {sparce_waypoint_count}"
-            # )
+            self.get_logger().info(
+                f"Sparse Waypoint Count: {sparce_waypoint_count}"
+            )
 
-            # self.get_logger().info(
-            #     f"Dense Waypoint Count: {dense_waypoint_count}"
-            # )
+            self.get_logger().info(
+                f"Dense Waypoint Count: {len(path_x)}"
+            )
 
             self.get_logger().info(
                 f"Normalized Smoothness: {smoothness:.3f}"
@@ -267,24 +267,24 @@ class PlannerBenchmark(Node):
         # SAVE TO CSV
         # ---------------------------------------
 
-        with open(self.results_file, "a", newline="") as file:
+        # with open(self.results_file, "a", newline="") as file:
 
-            writer = csv.writer(file)
+        #     writer = csv.writer(file)
 
-            writer.writerow([
-                ser_num,
-                planner_name,
-                # start_x,
-                # start_y,
-                # goal_x,
-                # goal_y,
-                planning_time_ms,
-                path_length,
-                # sparce_waypoint_count,
-                # dense_waypoint_count,
-                smoothness,
-                # success
-            ])
+        #     writer.writerow([
+        #         ser_num,
+        #         planner_name,
+        #         # start_x,
+        #         # start_y,
+        #         # goal_x,
+        #         # goal_y,
+        #         planning_time_ms,
+        #         path_length,
+        #         # sparce_waypoint_count,
+        #         # dense_waypoint_count,
+        #         smoothness,
+        #         # success
+        #     ])
 
     # ----------------------------------------------------------
     # PATH LENGTH
@@ -407,7 +407,7 @@ class PlannerBenchmark(Node):
             if angle < angle_threshold:
                 turn_count += 1
 
-        return turn_count
+        return turn_count + 2
 
 
 # --------------------------------------------------------------
@@ -440,23 +440,32 @@ def main(args=None):
         (-2.69, -21.35, 1.45, -4.31)
     ]
 
+    node.send_goal(
+        1,
+        "test",
+        tests[0][0],
+        tests[0][1],
+        tests[0][2],
+        tests[0][3]
+    )
+
     # planner_name = "Nav2AStar"
     # planner_name = "Nav2ThetaStar"
-    planner_name = "CThetaStar"
+    # planner_name = "CThetaStar"
 
-    for test in tests:
-        for count in range(100):
+    # for test in tests:
+    #     for count in range(100):
 
-            node.send_goal(
-                count,
-                planner_name,
-                test[0],
-                test[1],
-                test[2],
-                test[3]
-            )
+    #         node.send_goal(
+    #             count,
+    #             planner_name,
+    #             test[0],
+    #             test[1],
+    #             test[2],
+    #             test[3]
+    #         )
 
-            time.sleep(0.1)
+    #         time.sleep(0.1)
 
     node.get_logger().info("Benchmark Complete")
 
