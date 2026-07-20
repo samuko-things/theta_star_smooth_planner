@@ -84,7 +84,7 @@ def generate_launch_description():
   lifecycle_nodes = [
     'map_server',
     'amcl',
-    'costmap',
+    # 'costmap',
   ]
 
   remappings = [('/tf', 'tf'), ('/tf_static', 'tf_static')]
@@ -134,10 +134,10 @@ def generate_launch_description():
  
   # Add the nodes to the launch description
   ld.add_action(rviz_node)
-  ld.add_action(planner_node)
-  ld.add_action(pure_pursuit_node)
+  # ld.add_action(planner_node)
+  # ld.add_action(pure_pursuit_node)
   ld.add_action(nav2_map_server_node)
-  ld.add_action(nav2_costmap_2d_node)
+  # ld.add_action(nav2_costmap_2d_node)
   ld.add_action(nav2_amcl_node)
   ld.add_action(nav2_lifecycle_manager_node)
 
