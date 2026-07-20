@@ -21,8 +21,8 @@ def generate_launch_description():
   nav_params_file = os.path.join(pkg_path, 'config', nav_params_file_name)
 
   # Set the path to the map file used by AMCL
-  # map_file_name = 'room_with_walls.yaml'
-  map_file_name = 'hospital.yaml'
+  map_file_name = 'room_with_walls.yaml'
+  # map_file_name = 'hospital.yaml'
   map_file = os.path.join(pkg_path, 'maps', map_file_name)
  
   #--------------------------------------------------------------------------
