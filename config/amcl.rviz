@@ -7,6 +7,8 @@ Panels:
         - /TF1/Frames1
         - /PoseWithCovariance1/Covariance1
         - /ParticleCloud1/Topic1
+        - /A-Path1
+        - /T-Path1
       Splitter Ratio: 0.5
     Tree Height: 627
   - Class: rviz_common/Selection
@@ -502,7 +504,7 @@ Visualization Manager:
       Head Length: 0.20000000298023224
       Length: 0.30000001192092896
       Line Style: Billboards
-      Line Width: 0.05000000074505806
+      Line Width: 0.019999999552965164
       Name: A-Path
       Offset:
         X: 0
@@ -547,13 +549,13 @@ Visualization Manager:
     - Alpha: 1
       Buffer Length: 1
       Class: rviz_default_plugins/Path
-      Color: 38; 162; 105
+      Color: 224; 27; 36
       Enabled: true
       Head Diameter: 0.30000001192092896
       Head Length: 0.20000000298023224
       Length: 0.30000001192092896
       Line Style: Billboards
-      Line Width: 0.05000000074505806
+      Line Width: 0.019999999552965164
       Name: T-Path
       Offset:
         X: 0
@@ -627,7 +629,7 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 70.02445220947266
+      Scale: 130.81076049804688
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz_default_plugins)
       X: 1.4105041027069092
