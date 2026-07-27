@@ -108,10 +108,10 @@ class PlannerBenchmark(Node):
         goal_msg.goal.pose.position.y = goal_y
         goal_msg.goal.pose.orientation.w = 1.0
 
-        self.get_logger().info(
-            f"Sending Goal: "
-            f"({start_x}, {start_y}) -> ({goal_x}, {goal_y})"
-        )
+        # self.get_logger().info(
+        #     f"Sending Goal: "
+        #     f"({start_x}, {start_y}) -> ({goal_x}, {goal_y})"
+        # )
 
         self.client.wait_for_server()
 
@@ -231,37 +231,37 @@ class PlannerBenchmark(Node):
             # PRINT BENCHMARK RESULTS
             # -----------------------------------
 
-            self.get_logger().info(
-                f"-"*20
-            )
+            # self.get_logger().info(
+            #     f"-"*20
+            # )
+
+            # self.get_logger().info(
+            #     f"Ser Num: {ser_num}"
+            # )
 
             self.get_logger().info(
-                f"Ser Num: {ser_num}"
+                f"Planning Time: {planning_time_ms:.3f} ms\n"
             )
 
-            self.get_logger().info(
-                f"Planning Time: {planning_time_ms:.3f} ms"
-            )
+            # self.get_logger().info(
+            #     f"Path Length: {path_length:.3f} m"
+            # )
 
-            self.get_logger().info(
-                f"Path Length: {path_length:.3f} m"
-            )
+            # self.get_logger().info(
+            #     f"Sparse Waypoint Count: {sparce_waypoint_count}"
+            # )
 
-            self.get_logger().info(
-                f"Sparse Waypoint Count: {sparce_waypoint_count}"
-            )
+            # self.get_logger().info(
+            #     f"Dense Waypoint Count: {len(path_x)}"
+            # )
 
-            self.get_logger().info(
-                f"Dense Waypoint Count: {len(path_x)}"
-            )
+            # self.get_logger().info(
+            #     f"Normalized Smoothness: {smoothness:.3f}"
+            # )
 
-            self.get_logger().info(
-                f"Normalized Smoothness: {smoothness:.3f}"
-            )
-
-            self.get_logger().info(
-                f"-"*20
-            )
+            # self.get_logger().info(
+            #     f"-"*20
+            # )
 
         # ---------------------------------------
         # SAVE TO CSV
@@ -440,32 +440,32 @@ def main(args=None):
         (-2.69, -21.35, 1.45, -4.31)
     ]
 
-    node.send_goal(
-        1,
-        "test",
-        tests[0][0],
-        tests[0][1],
-        tests[0][2],
-        tests[0][3]
-    )
+    # node.send_goal(
+    #     1,
+    #     "test",
+    #     tests[0][0],
+    #     tests[0][1],
+    #     tests[0][2],
+    #     tests[0][3]
+    # )
 
     # planner_name = "Nav2AStar"
     # planner_name = "Nav2ThetaStar"
-    # planner_name = "CThetaStar"
+    planner_name = "SThetaStar"
 
-    # for test in tests:
-    #     for count in range(100):
+    for test in tests:
+        for count in range(20):
 
-    #         node.send_goal(
-    #             count,
-    #             planner_name,
-    #             test[0],
-    #             test[1],
-    #             test[2],
-    #             test[3]
-    #         )
+            node.send_goal(
+                count,
+                planner_name,
+                test[0],
+                test[1],
+                test[2],
+                test[3]
+            )
 
-    #         time.sleep(0.1)
+            time.sleep(0.1)
 
     node.get_logger().info("Benchmark Complete")
 

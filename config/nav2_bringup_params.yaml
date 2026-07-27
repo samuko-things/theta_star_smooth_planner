@@ -173,9 +173,17 @@ planner_server:
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "theta_star_smooth_planner_plugin::ThetaStarSmoothPlanner"
-      cost_limit: 1.0
-      obs_clearance: 0.1
-      densification_d: 0.15
+      cost_limit: 99.0
+
+# planner_server:
+#   ros__parameters:
+#     use_sim_time: true
+#     expected_planner_frequency: 20.0
+#     planner_plugins: ["GridBased"]
+#     costmap_update_timeout: 1.0
+#     GridBased:
+#       plugin: "simple_theta_star_planner::SimpleThetaStarPlanner"
+#       use_lazy: true
 
 
 controller_server:
